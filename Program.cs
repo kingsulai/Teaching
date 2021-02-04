@@ -16,7 +16,7 @@ namespace Teaching
             /* Commenting Trick
             var e = new Example1();
             /*/
-            var e = new Example1();
+            IExample e = new Example1();
             //*/
 
             e.Run();
