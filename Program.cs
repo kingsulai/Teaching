@@ -29,10 +29,23 @@ namespace Teaching
     /// </summary>
     public interface IExample
     {
+
         /// <summary>
         /// Run the Example
         /// </summary>
         void Run();
     }
 
+    public abstract class DefaultExample : IExample
+    {
+        private readonly int x;
+
+        public DefaultExample(int x, int y)
+        {
+            this.x = x;
+        }
+
+
+        public abstract void Run();
+    }
 }

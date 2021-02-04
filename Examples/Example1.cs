@@ -113,12 +113,18 @@ namespace Teaching.Examples
             // if assign
             x = a > 0 ? a : b;
 
+            string s = null;
+
+            s ??= "null ";
+
+            s.Trim();
+
             var json = JsonSerializer.Serialize(this);
             Console.WriteLine(JsonSerializer.Serialize(this));
             IExample e = JsonSerializer.Deserialize<Example1>(json);
 
             Assembly.GetExecutingAssembly().GetType();
-
+            
         }
 
 
