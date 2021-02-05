@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Teaching.Examples
 {
-    public interface Visitor
+    public interface IVisitor
     {
         void VistProduct(Product p);
     }
 
     public class VisitorBox : Box
     {
-        public void VisitProducts(Visitor v)
+        public void VisitProducts(IVisitor v)
         {
             foreach(var p in products)
             {
