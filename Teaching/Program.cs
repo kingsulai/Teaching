@@ -12,7 +12,7 @@ namespace Teaching
         static void Main(string[] args)
         {
             var serviceProvider = new ServiceCollection()
-                .AddLogging(c => c.AddProvider(new MyLoggerProvider())) //c.AddConsole())
+                .AddLogging(c => c.AddConsole())
                 .AddSingleton(typeof(IDIExample),typeof( DIExample))
                 .BuildServiceProvider();
             /* Commenting Trick
