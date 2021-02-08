@@ -13,6 +13,8 @@ namespace Teaching.Examples
             {
                 switch (p)
                 {
+                    case null:
+                        break;
                     case Product p1:
                         v(p1);
                         break;
