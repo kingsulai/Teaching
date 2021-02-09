@@ -11,9 +11,11 @@ namespace Teaching
     {
         static void Main(string[] args)
         {
+            
             var serviceProvider = new ServiceCollection()
                 .AddLogging(c => c.AddConsole())
-                .AddSingleton(typeof(IDIExample),typeof( DIExample))
+                .AddSingleton(typeof(IDIExample), typeof(DIExample2))
+                .AddScoped(typeof(IDependant), typeof(Dependant))
                 .BuildServiceProvider();
             /* Commenting Trick
             var e = new Example1();
@@ -21,9 +23,13 @@ namespace Teaching
             IExample e = new Example1();
             //*/
 
+
             var diExample = serviceProvider.GetService<IDIExample>();
             diExample.LogSomething();
             e.Run();
+
+            var dep = serviceProvider.GetService<IDependant>();
+            dep.CallDependentObj();
 
             StreamWriter w = new StreamWriter("log.txt");
             w.WriteLine("TEST");
