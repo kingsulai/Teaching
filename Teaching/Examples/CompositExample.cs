@@ -17,7 +17,7 @@ namespace Teaching.Examples
         public float price;
         public float CalculatePrice()
         {
-            throw new NotImplementedException();
+            return price;
         }
     }
 
@@ -30,7 +30,10 @@ namespace Teaching.Examples
         public List<IProduct> products;
         public float CalculatePrice()
         {
-            throw new NotImplementedException();
+            var result = 0.0f;
+            foreach (var product in products)
+                result += product.CalculatePrice();
+            return result;
         }
     }
 }

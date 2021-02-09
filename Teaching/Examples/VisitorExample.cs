@@ -7,19 +7,19 @@ namespace Teaching.Examples
 
     public class VisitorBox : Box
     {
-        public void VisitProducts(Action<Product> v)
+        public void VisitProducts(Action<Product> visitorAction)
         {
-            foreach(var p in products)
+            foreach(var product in products)
             {
-                switch (p)
+                switch (product)
                 {
                     case null:
                         break;
-                    case Product p1:
-                        v(p1);
+                    case Product p:
+                        visitorAction(p);
                         break;
-                    case VisitorBox vb:
-                        vb.VisitProducts(v);
+                    case VisitorBox box:
+                        box.VisitProducts(visitorAction);
                         break;
                 }
             }
