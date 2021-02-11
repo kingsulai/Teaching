@@ -5,28 +5,15 @@ using System.Text;
 namespace Teaching.Examples
 {
 
-    public interface IObservable
+    public interface IObservable<T>
     {
 
-        void AddObserver(Action<IObservable> observable);
+        void AddObserver(Action<T> observer);
 
-        void RemoveObserver(Action<IObservable> observable);
+        void RemoveObserver(Action<T> observer);
 
     }
 
-
-    public class D
-    {
-        public D()
-        {
-            var x = new ObservableList<int>();
-            x.Add(1);
-            x.AddObserver((i) => Console.WriteLine(i));
-            x.Add(2); //soll 2 Ausgeben weil Observer aufgerufen wird
-            x.Set(2, 3); //soll 3 Ausgeben weil Observer aufgerufen wird
-
-        }
-    }
 
 
     /// <summary>
@@ -35,47 +22,114 @@ namespace Teaching.Examples
     /// Es sollen auch Observer aufgerufen Werden wenn eines der Objecte hinzugefügt oder entfernt wird.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ObservableList<T> : IObservable
+    public class ObservableList<T> : IObservable<(int,T)>
     {
+        private Action<(int, T)> observers;
+        private readonly List<T> elements = new List<T>();
 
-        public void AddObserver(Action<IObservable> observable)
+        public class Observable<T> : IObservable<T>
         {
-            //TODO
-            throw new NotImplementedException();
-        }
+            private Action<T> observers;
+            private T value;
 
-        public void RemoveObserver(Action<IObservable> observable)
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+            /// <summary>
+            /// Constructor will initialize the value when there are still no observers
+            /// </summary>
+            /// <param name="value"></param>
+            public Observable(T value)
+            {
+                this.value = value;
+            }
 
-        public void Add(T t)
-        {
-            //TODO
-            throw new NotImplementedException();
+            /// <summary>
+            /// Get or set the value of the Observer. Setting it will call the observers
+            /// </summary>
+            public T Value
+            {
+                get { return value; }
+                set
+                {
+                    this.value = value;
+                    observers(value);
+                }
+            }
+
+            /// <summary>
+            /// Add an observer
+            /// </summary>
+            /// <param name="observer">the observer to add</param>
+            public void AddObserver(Action<T> observer)
+            {
+                observers += observer;
+            }
+
+            /// <summary>
+            /// Remove an observer
+            /// </summary>
+            /// <param name="observer">the Observer to remove</param>
+            public void RemoveObserver(Action<T> observer)
+            {
+                observers -= observer;
+            }
         }
-        public void Remove(T t)
+        /// <summary>
+        /// Add a new observer.
+        /// </summary>
+        /// <param name="observer"> the observer to add</param>
+        public void AddObserver(Action<(int, T)> observer)
         {
-            //TODO
-            throw new NotImplementedException();
+            observers += observer;
+        }
+        /// <summary>
+        /// Remove an observer
+        /// </summary>
+        /// <param name="observer"> the observer to remove</param>
+        public void RemoveObserver(Action<(int, T)> observer)
+        {
+            observers -= observer;
         }
 
         /// <summary>
-        /// Hier können wir nicht sagen ob es geändert wurde
+        /// Add a new element to the list
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public T Get(int index)
+        /// <param name="t"></param>
+        public void Add(T t)
         {
-            //TODO
-            throw new NotImplementedException();
+            elements.Add(t);
+            observers((elements.Count, t));
         }
 
-        public void Set(int index, T t)
+        /// <summary>
+        /// Remove the value and call the observer
+        /// </summary>
+        /// <param name="t"></param>
+        public void Remove(T t)
         {
-            //TODO
-            throw new NotImplementedException();
+            elements.Remove(t);
+        }
+
+        /// <summary>
+        /// Returns an observer for the value witch in turb will call the observer of the list with its index
+        /// </summary>
+        /// <param name="index">index of the value</param>
+        /// <returns></returns>
+        public IObservable<T> Get(int index)
+        {
+
+            var o = new Observable<T>(elements[index]);
+            o.AddObserver(o => observers((index, elements[index])));
+            return o;
+        }
+
+        /// <summary>
+        /// Set the element at the given index. This notifies all observers;
+        /// </summary>
+        /// <param name="index"> must be in range [0,ObservableList.Count).</param>
+        /// <param name="value"></param>
+        public void Set(int index, T value)
+        {
+            elements[index] = value;
+            observers((index,value));
         }
 
         /// <summary>
@@ -84,18 +138,17 @@ namespace Teaching.Examples
         /// <returns></returns>
         public int Count()
         {
-            //TODO
-            throw new NotImplementedException();
+            return elements.Count;
         }
 
+        /// <summary>
+        /// Simply print all the elements of the list
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            var s = "";
-            for (int i=0;i<Count();i++)
-            {
-                s += Get(i)+" ";
-            }
-            return s;
+            return string.Join(",",elements);
         }
+
     }
 }

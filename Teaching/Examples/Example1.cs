@@ -31,11 +31,12 @@ namespace Teaching.Examples
         /// </summary>
         public int C { get; } = 0;
 
+        /// <summary>
+        /// Delegate definition like System.Action
+        /// </summary>
         delegate void Del();
         Del del;
-
-
-
+        
         /// <summary>
         /// Shows the following:
         /// - Reference vs Value
@@ -127,7 +128,12 @@ namespace Teaching.Examples
             
         }
 
-
+        /// <summary>
+        /// Example how to use Region definitions in c# visual studio
+        /// Folded Region can be expanded or collapsed
+        /// </summary>
+        /// <param name="v"></param>
+        #region Folding Example
         void Method(ref int v)
         {
             v = 1;
@@ -149,6 +155,7 @@ namespace Teaching.Examples
         {
             return v.CompareTo(this)==0;
         }
+        #endregion a
     }
 
     internal class Example2 : IComparable<IExample>
