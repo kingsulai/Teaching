@@ -15,18 +15,29 @@ namespace Teaching.Examples
     }
 
 
-
     /// <summary>
     /// Ziel ist es dass hier Werte vom Typ T gespeichert werden.
     /// Immer wenn eines der Objekte geändert sollen alle Observer Funktionen aufgerufen werden.
     /// Es sollen auch Observer aufgerufen Werden wenn eines der Objecte hinzugefügt oder entfernt wird.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ObservableList<T> : IObservable<(int,T)>
+    public class ObservableList<T> : IObservable<(int, T)>
     {
         private Action<(int, T)> observers;
         private readonly List<T> elements = new List<T>();
 
+
+        public static ObservableList<T> operator +(ObservableList<T> a, List<T> b)
+        {
+            foreach (var e in b)
+                a.Add(e);
+            return a;
+        }
+
+        /// <summary>
+        /// Example operator overloading
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         public class Observable<T> : IObservable<T>
         {
             private Action<T> observers;
@@ -50,7 +61,8 @@ namespace Teaching.Examples
                 set
                 {
                     this.value = value;
-                    observers(value);
+                    if (observers != null)
+                        observers(value);
                 }
             }
 
@@ -96,7 +108,8 @@ namespace Teaching.Examples
         public void Add(T t)
         {
             elements.Add(t);
-            observers((elements.Count, t));
+            if (observers != null)
+                observers((elements.Count - 1, t));
         }
 
         /// <summary>
@@ -105,7 +118,10 @@ namespace Teaching.Examples
         /// <param name="t"></param>
         public void Remove(T t)
         {
+            var index = elements.IndexOf(t);
             elements.Remove(t);
+            if (observers != null)
+                observers((index, t));
         }
 
         /// <summary>
@@ -113,11 +129,16 @@ namespace Teaching.Examples
         /// </summary>
         /// <param name="index">index of the value</param>
         /// <returns></returns>
-        public IObservable<T> Get(int index)
+        public Observable<T> Get(int index)
         {
 
             var o = new Observable<T>(elements[index]);
-            o.AddObserver(o => observers((index, elements[index])));
+            if (observers != null)
+                o.AddObserver(o =>
+                {
+                    elements[index] = o;
+                    observers((index, elements[index]));
+                });
             return o;
         }
 
@@ -129,7 +150,9 @@ namespace Teaching.Examples
         public void Set(int index, T value)
         {
             elements[index] = value;
-            observers((index,value));
+
+            if (observers != null)
+                observers((index, value));
         }
 
         /// <summary>
@@ -147,7 +170,7 @@ namespace Teaching.Examples
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Join(",",elements);
+            return string.Join(",", elements);
         }
 
     }
