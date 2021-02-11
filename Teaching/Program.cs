@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Lamar;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ namespace Teaching
     {
         static void Main(string[] args)
         {
-            
+
             var serviceProvider = new ServiceCollection()
                 .AddLogging(c => c.AddConsole())
                 .AddSingleton(typeof(IDIExample), typeof(DIExample2))
@@ -35,6 +36,8 @@ namespace Teaching
             w.WriteLine("TEST");
             w.Flush();
             w.Close();
+
+
 
         }
     }
@@ -85,7 +88,7 @@ namespace Teaching
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            fstream.WriteLine(formatter(state,exception)+"TEST");
+            fstream.WriteLine(formatter(state, exception) + "TEST");
             fstream.Flush();
         }
     }
